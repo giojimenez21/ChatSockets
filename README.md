@@ -1,5 +1,5 @@
 # ChatSockets
-Backend plicación de chat con websockets utilizando las siguientes tecnologías:
+Backend para alicación de chat con websockets utilizando las siguientes tecnologías:
 - NodeJS
 - Express
 - TypeScript
