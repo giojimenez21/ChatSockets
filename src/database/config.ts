@@ -14,4 +14,5 @@ export const db = new Sequelize(configDB.db, configDB.user, configDB.password,{
         acquire: 30000,
         idle: 10000,
     },
+    logging: false
 });
