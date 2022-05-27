@@ -3,28 +3,38 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 import { startGetMessagesOfChat, getMessagesOfChat, activeChatName } from '../../actions/chat';
+import { joinRoom } from '../../actions/socket';
 
 export const ItemAside = ({ conversation }) => {
     const { user } = useContext(AuthContext);
     const { dispatch } = useContext(ChatContext);
     const date = moment();
-    
-    const activeChat = async() => {
+
+    const activeChat = async () => {
         const { messages } = await startGetMessagesOfChat(conversation?.id_room);
-        if(messages.length > 0){
+        if (messages.length > 0) {
             dispatch(getMessagesOfChat(messages));
             dispatch(activeChatName(conversation));
         }
+        joinRoom(conversation?.id_room);
     }
 
 
     return (
         <div className='p-4 flex border-b-2 border-gray-100 cursor-pointer hover:bg-green-50' onClick={activeChat}>
             <div className="w-1/6">
-                <img
-                    className="w-12 rounded-full"
-                    src={conversation?.url_img}
-                />
+                {
+                    conversation?.url_img === ""
+                        ?
+                        <div className="text-2xl text-center my-auto">
+                            <i className='fa fa-users' />
+                        </div>
+                        :
+                        <img
+                            className="w-12 rounded-full"
+                            src={conversation?.url_img}
+                        />
+                }
             </div>
 
             <div className="w-5/6">

@@ -125,3 +125,8 @@ export const newRoom = async(users) => {
         console.log(error);
     }
 }
+
+export const createConversation = (conversation) => ({
+    type: types.createConversation,
+    payload: conversation
+});

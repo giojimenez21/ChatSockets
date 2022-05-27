@@ -3,7 +3,7 @@ import { types } from '../types/types';
 const init = {
     conversations: [],
     messages: [],
-    activeChat: "",
+    activeChat: {},
     users: []
 }
 
@@ -40,9 +40,16 @@ export const chatReducer = (state = init, action) => {
 
             const conversationsFilter = state.conversations.filter(conversation => conversation.id_room !== action.payload.id_room);
 
+            if (action.payload.id_room === state.activeChat.id_room) {
+                return {
+                    ...state,
+                    messages: [...state.messages, action.payload],
+                    conversations: [conversationUpdatedFinal, ...conversationsFilter]
+                }
+            }
+
             return {
                 ...state,
-                messages: [...state.messages, action.payload],
                 conversations: [conversationUpdatedFinal, ...conversationsFilter]
             }
 
@@ -51,7 +58,12 @@ export const chatReducer = (state = init, action) => {
                 ...state,
                 users: action.payload
             }
-            
+
+        case types.createConversation:
+            return {
+                ...state,
+                conversations: [action.payload, ...state.conversations]
+            }
         default:
             break;
     }

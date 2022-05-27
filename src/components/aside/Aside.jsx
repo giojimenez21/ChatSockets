@@ -18,7 +18,8 @@ export const Aside = () => {
         }
         getMessagesAPI();
     }, []);
-    
+
+
 
     return (
         <div className='w-4/12 overflow-y-scroll'>
@@ -27,8 +28,8 @@ export const Aside = () => {
             {
                 chat?.conversations?.map(conversation => {
                     return (
-                        <ItemAside 
-                            conversation={conversation} 
+                        <ItemAside
+                            conversation={conversation}
                             key={conversation?.id_room}
                         />
                     )

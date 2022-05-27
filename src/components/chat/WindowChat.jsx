@@ -5,11 +5,10 @@ import { ChatContext } from '../../context/ChatContext';
 
 export const WindowChat = () => {
     const { chat } = useContext(ChatContext);
-    
     return (
         <>
             {
-                chat?.messages.length > 0
+                chat?.activeChat?.nameRoom !== undefined
                 ?
                 <Chat />
                 :

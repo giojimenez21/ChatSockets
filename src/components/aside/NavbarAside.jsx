@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import React, { Fragment, useContext } from 'react';
 import { logout } from '../../actions/auth';
+import { disconnectSocket } from '../../actions/socket';
 import { openModalNewGroup, openModalNewMessage } from '../../actions/ui';
 import { AuthContext } from '../../context/AuthContext';
 import { UiContext } from '../../context/UiContext';
@@ -10,6 +11,7 @@ export const NavbarAside = () => {
     const { dispatchUi } = useContext(UiContext);
 
     const startLogout = () => {
+        disconnectSocket();
         localStorage.clear();
         dispatchUser(logout());
     }

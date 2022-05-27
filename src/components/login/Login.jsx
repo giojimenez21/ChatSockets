@@ -2,6 +2,7 @@ import { gapi } from 'gapi-script';
 import React, { useContext, useEffect } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { login, startLogin } from '../../actions/auth';
+import { initiateSocket } from '../../actions/socket';
 import { adapterLogin } from '../../adapters/adapters';
 import { AuthContext } from '../../context/AuthContext';
 const clientGoogle = import.meta.env.VITE_CLIENT_GOOGLE;
@@ -16,6 +17,7 @@ export const Login = () => {
             const { user, token } = res;
             dispatch(login(adapterLogin(user)));
             localStorage.setItem('token', token);
+            initiateSocket();
         }
     }
 

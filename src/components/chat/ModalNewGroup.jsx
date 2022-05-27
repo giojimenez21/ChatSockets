@@ -2,9 +2,9 @@ import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { Dialog, Transition, Combobox } from '@headlessui/react'
 import { ItemUserForRoom } from './ItemUserForRoom';
 import { useForm } from '../../hooks/useForm';
+import { AuthContext } from '../../context/AuthContext';
 import { UiContext } from '../../context/UiContext';
 import { ChatContext } from '../../context/ChatContext';
-import { AuthContext } from '../../context/AuthContext';
 import { closeModalNewGroup } from '../../actions/ui';
 import {
     getLastMessages,
@@ -14,27 +14,60 @@ import {
     startGetLastMessages,
     usersFound
 } from '../../actions/chat';
+import { adapterTypeChat } from '../../adapters/adapters';
 
 
 export const ModalNewGroup = () => {
     const [selected, setSelected] = useState({});
     const [usersRoom, setUsersRoom] = useState([]);
+    const { user } = useContext(AuthContext);
     const { ui, dispatchUi } = useContext(UiContext);
     const { chat, dispatch: dispatchChat } = useContext(ChatContext);
     const [searchInput, handleSearch, reset] = useForm({
         search: "",
         message: "",
-        type: ""
+        nameRoom: ""
     });
 
     const searchUsers = async (search) => {
         const { resultUsers } = await searchUsersForChat(search);
-
         dispatchChat(usersFound(resultUsers));
     }
 
     const closeModal = () => {
         dispatchUi(closeModalNewGroup());
+    }
+
+    const createGroup = async () => {
+        if (searchInput?.message !== "" && searchInput?.nameRoom !== "" && usersRoom.length > 1) {
+            // Creamos la sala
+            const data = await newRoom({
+                users: [{ id_user: user?.id }, ...usersRoom.map(user => {
+                    return {
+                        id_user: user.id
+                    }
+                })],
+                nameRoom: searchInput?.nameRoom
+            });
+
+            // Enviamos el mensaje
+            if (data) {
+                await sendNewMessage({
+                    message: searchInput?.message,
+                    id_room: data?.id_room
+                });
+
+                // obtenemos los ultimos mensajes
+                const { resultMessages } = await startGetLastMessages();
+
+                // Lo subimos al state y reseteamos los state del modal
+                dispatchChat(getLastMessages(adapterTypeChat(resultMessages)));
+                reset();
+                setSelected({});
+                setUsersRoom([]);
+                closeModal();
+            }
+        }
     }
 
 
@@ -43,6 +76,7 @@ export const ModalNewGroup = () => {
             searchUsers(searchInput?.search);
         }
     }, [searchInput?.search])
+    
 
     useEffect(() => {
         if (Object.keys(selected).length !== 0) {
@@ -51,9 +85,6 @@ export const ModalNewGroup = () => {
             }
         }
     }, [selected])
-
-    console.log(searchInput);
-
 
     return (
         <>
@@ -100,7 +131,7 @@ export const ModalNewGroup = () => {
                                                 <div className="w-full p-4 shadow-md rounded-md flex flex-wrap">
                                                     {
                                                         usersRoom?.map(user => {
-                                                            return <ItemUserForRoom user={user} />
+                                                            return <ItemUserForRoom user={user} key={user?.id} />
                                                         })
                                                     }
                                                 </div>
@@ -160,10 +191,10 @@ export const ModalNewGroup = () => {
                                     </Combobox>
                                     <input
                                         className='w-full py-2 pl-3 shadow-md pr-10 text-sm leading-5 text-gray-900 focus:ring-0 focus:outline-none my-2' type="text"
-                                        name="type"
+                                        name="nameRoom"
                                         placeholder='Nombre del grupo'
                                         autoComplete='off'
-                                        value={searchInput?.type}
+                                        value={searchInput?.nameRoom}
                                         onChange={handleSearch}
                                     />
                                     <textarea
@@ -178,6 +209,7 @@ export const ModalNewGroup = () => {
                                     </textarea>
                                     <button
                                         className='block mx-auto bg-green-400 p-2 rounded-md text-white shadow-md hover:bg-green-500'
+                                        onClick={createGroup}
                                     >
                                         <i className="fas fa-users mr-2"></i>
                                         Crear grupo

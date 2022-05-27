@@ -7,21 +7,23 @@ import { Login } from '../components/login/Login';
 import { login, startChecking } from '../actions/auth';
 import { adapterLogin } from '../adapters/adapters';
 import { Home } from '../components/Home';
+import { initiateSocket } from '../actions/socket';
 
 export const AppRouter = () => {
     const { user, dispatch } = useContext(AuthContext);
 
-    useEffect(() => {
-        const check = async () => {
-            const res = await startChecking();
-            if (res?.user) {
-                dispatch(login(adapterLogin(res?.user)));
-                localStorage.setItem('token', res?.token);
-            }
+    const check = async () => {
+        const res = await startChecking();
+        if (res?.user) {
+            dispatch(login(adapterLogin(res?.user)));
+            localStorage.setItem('token', res?.token);
+            initiateSocket();
         }
+    }
+
+    useEffect(() => {
         check();
     }, []);
-
 
     return (
         <Router>

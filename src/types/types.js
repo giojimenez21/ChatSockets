@@ -6,6 +6,7 @@ export const types = {
     activeChat: '[chat] active chat',
     newMessage: '[chat] new Message',
     searchUsers: '[chat] search users',
+    createConversation: '[chat] create Conversation',
     openModalNewMessage: '[ui] Open modal  new message',
     closeModalNewMessage: '[ui] close modal new message',
     openModalNewGroup: '[ui] Open modal new group',

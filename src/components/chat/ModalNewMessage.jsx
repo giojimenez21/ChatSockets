@@ -6,7 +6,9 @@ import { ChatContext } from '../../context/ChatContext';
 import { AuthContext } from '../../context/AuthContext';
 import { closeModalNewMessage } from '../../actions/ui';
 import {
+    createConversation,
     getLastMessages,
+    newMessage,
     newRoom,
     searchUsersForChat,
     sendNewMessage,
@@ -14,6 +16,8 @@ import {
     usersFound
 } from '../../actions/chat';
 import { adapterTypeChat } from '../../adapters/adapters';
+import moment from 'moment';
+import { sendMessageSocket } from '../../actions/socket';
 
 
 export const ModalNewMessage = () => {
@@ -33,6 +37,8 @@ export const ModalNewMessage = () => {
 
     const closeModal = () => {
         dispatchUi(closeModalNewMessage());
+        reset();
+        setSelected({});
     }
 
     const createAndSendMessage = async () => {
@@ -46,10 +52,20 @@ export const ModalNewMessage = () => {
                 });
 
                 if (res) {
-                    const { resultMessages } = await startGetLastMessages();
-                    dispatchChat(getLastMessages(adapterTypeChat(resultMessages)));
-                    reset();
-                    setSelected({});
+                    // const { resultMessages } = await startGetLastMessages();
+                    // dispatchChat(getLastMessages(adapterTypeChat(resultMessages)));
+                    dispatchChat(newMessage({
+                        message: searchInput?.message,
+                        id_room: conversationExist[0]?.id_room,
+                        id_user: user.id,
+                        createdAt: moment()
+                    }));
+                    sendMessageSocket({
+                        message: searchInput?.message,
+                        id_room: conversationExist[0]?.id_room,
+                        id_user: user.id,
+                        createdAt: moment()
+                    })
                     closeModal();
                 }
             } else {
@@ -67,11 +83,15 @@ export const ModalNewMessage = () => {
                 });
 
                 if (res1) {
-
-                    const { resultMessages } = await startGetLastMessages();
-                    dispatchChat(getLastMessages(adapterTypeChat(resultMessages)));
-                    reset();
-                    setSelected({});
+                    dispatchChat(createConversation({
+                        id_room: data?.id_room,
+                        nameRoom: selected?.name,
+                        url_img: selected?.url_img,
+                        id_user: user?.id,
+                        message: searchInput?.message,
+                        createdAt: moment(),
+                        type: "NORMAL"
+                    }));
                     closeModal();
                 }
             }

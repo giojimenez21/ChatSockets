@@ -1,6 +1,7 @@
 import moment from 'moment';
-import React, { useContext, useState } from 'react';
+import React, { useContext} from 'react';
 import { newMessage, sendNewMessage } from '../../actions/chat';
+import { sendMessageSocket } from '../../actions/socket';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 import { useForm } from '../../hooks/useForm';
@@ -13,6 +14,7 @@ export const InputMessage = () => {
         message: ""
     });
 
+
     const sendMessage = async (e) => {
         e.preventDefault();
         if (messageInput.message !== "") {
@@ -22,12 +24,23 @@ export const InputMessage = () => {
             });
 
             if (res) {
+                // Lo ponemos en el state
                 dispatchChat(newMessage({
                     ...messageInput,
                     id_room: chat?.activeChat?.id_room,
                     id_user: user.id,
                     createdAt: moment(),
-                }))
+                }));
+                // Lo mandamos al socket
+                sendMessageSocket({
+                    ...messageInput,
+                    id_room: chat?.activeChat?.id_room,
+                    id_user: user.id,
+                    createdAt: moment(),
+                    user: {
+                        name: user.name
+                    }
+                });
             }
         }
         reset();
