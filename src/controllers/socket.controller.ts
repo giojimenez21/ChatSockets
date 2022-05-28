@@ -21,7 +21,6 @@ export const socketController = async (socket: Socket) => {
     });
 
     socket.on("newRoom", (room) => {
-        console.log('New room asigned');
         socket.join(room);
     });
 
@@ -30,7 +29,6 @@ export const socketController = async (socket: Socket) => {
     });
 
     socket.on("sendMessageBackend", (payload) => {
-        console.log(payload);
         socket.to(payload.id_room).emit("sendMessageFront", payload);
     });
 };
