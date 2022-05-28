@@ -34,7 +34,6 @@ export const searchUser = async (req: Request, res: Response) => {
 
 export const newRoom = async (req: Request, res: Response) => {
     const { users, nameRoom } = req.body;
-    console.log(nameRoom);
     try {
         const { id: id_room }: any = await Room.create({
             type: nameRoom ? nameRoom : "NORMAL",

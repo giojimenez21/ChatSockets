@@ -10,17 +10,23 @@ export const socketController = async (socket: Socket) => {
         return socket.disconnect();
     }
 
-    console.log("Conectado:", user.name);
 
     // On disconnect client
     socket.on("disconnect", () => {
-        console.log("Client disconnected");
         return socket.disconnect();
     });
 
-    socket.on("join", (room) => {
-        console.log(`join ${room}`);
+    socket.on("join", (rooms) => {
+        socket.join(rooms);
+    });
+
+    socket.on("newRoom", (room) => {
+        console.log('New room asigned');
         socket.join(room);
+    });
+
+    socket.on("sendMessageBackendNewRoom", (payload) => {
+        socket.broadcast.emit("sendMessageNewRoom", payload);
     });
 
     socket.on("sendMessageBackend", (payload) => {
