@@ -1,9 +1,10 @@
 import { io } from "socket.io-client";
 
-export let socket;
+const URLBackend = import.meta.env.VITE_URL_BACKEND;
 
+export let socket;
 export const initiateSocket = () => {
-    const socketNew = io('http://localhost:8080', {
+    const socketNew = io(URLBackend, {
         'extraHeaders': {
             'x-token': localStorage.getItem('token') || ''
         },
