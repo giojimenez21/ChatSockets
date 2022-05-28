@@ -14,7 +14,7 @@ export const Home = () => {
     return (
         <ChatContext.Provider value={{ chat, dispatch }}>
             <UiContext.Provider value={{ ui, dispatchUi }}>
-                <div className='w-screen h-screen flex'>
+                <div className='w-screen h-screen flex animate__animated animate__slideInUp animate__faster'>
                     <Aside />
                     <WindowChat />
                 </div>

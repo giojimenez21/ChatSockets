@@ -26,7 +26,7 @@ export const InputSearch = () => {
                 {
                     inputSearch?.search !== ""
                     &&
-                    <button className='text-xl text-red-400 p-2' onClick={cleanSearch} type='button'>
+                    <button className='text-xl text-red-400 p-2 animate__animated animate__rotateIn' onClick={cleanSearch} type='button'>
                         <i className='fa-solid fa-circle-xmark'></i>
                     </button>
                 }
