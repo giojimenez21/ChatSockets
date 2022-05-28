@@ -7,6 +7,7 @@ import { InputSearch } from './InputSearch';
 import { ModalNewMessage } from '../chat/ModalNewMessage';
 import { ModalNewGroup } from '../chat/ModalNewGroup';
 import { adapterTypeChat } from '../../adapters/adapters';
+import { joinRoom } from '../../actions/socket';
 
 export const Aside = () => {
     const { chat, dispatch } = useContext(ChatContext);
@@ -14,7 +15,9 @@ export const Aside = () => {
     useEffect(() => {
         const getMessagesAPI = async () => {
             const { resultMessages } = await startGetLastMessages();
-            dispatch(getLastMessages(adapterTypeChat(resultMessages)));
+            const messagesAdapted = adapterTypeChat(resultMessages);
+            dispatch(getLastMessages(messagesAdapted));
+            joinRoom(messagesAdapted.map(message => message?.id_room));
         }
         getMessagesAPI();
     }, []);

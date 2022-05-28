@@ -7,17 +7,14 @@ import { AuthContext } from '../../context/AuthContext';
 import { closeModalNewMessage } from '../../actions/ui';
 import {
     createConversation,
-    getLastMessages,
     newMessage,
     newRoom,
     searchUsersForChat,
     sendNewMessage,
-    startGetLastMessages,
     usersFound
 } from '../../actions/chat';
-import { adapterTypeChat } from '../../adapters/adapters';
 import moment from 'moment';
-import { sendMessageSocket } from '../../actions/socket';
+import { newRoomSocket, sendMessageNewRoomSocket, sendMessageSocket } from '../../actions/socket';
 
 
 export const ModalNewMessage = () => {
@@ -52,8 +49,6 @@ export const ModalNewMessage = () => {
                 });
 
                 if (res) {
-                    // const { resultMessages } = await startGetLastMessages();
-                    // dispatchChat(getLastMessages(adapterTypeChat(resultMessages)));
                     dispatchChat(newMessage({
                         message: searchInput?.message,
                         id_room: conversationExist[0]?.id_room,
@@ -76,13 +71,26 @@ export const ModalNewMessage = () => {
                         { id_user: user?.id }
                     ]
                 });
+                newRoomSocket(data?.id_room);
 
                 const res1 = await sendNewMessage({
                     message: searchInput?.message,
                     id_room: data?.id_room
                 });
 
+
                 if (res1) {
+                    sendMessageNewRoomSocket({
+                        id_room: data?.id_room,
+                        nameRoom: selected?.name,
+                        url_img: selected?.url_img,
+                        id_user: user?.id,
+                        message: searchInput?.message,
+                        createdAt: moment(),
+                        type: "NORMAL",
+                        usersRoom: [ selected ] 
+                    });
+
                     dispatchChat(createConversation({
                         id_room: data?.id_room,
                         nameRoom: selected?.name,

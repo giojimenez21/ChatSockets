@@ -8,21 +8,11 @@ import { newMessage } from '../../actions/chat';
 
 export const Chat = () => {
     const messagesRef = useRef(null);
-    const { chat, dispatch } = useContext(ChatContext);
+    const { chat } = useContext(ChatContext);
 
     useEffect(() => {
         messagesRef.current?.scrollIntoView();
     }, [chat?.messages])
-
-
-    useEffect(() => {
-        socket?.on('sendMessageFront', (payload) => {
-            console.log(payload);
-            dispatch(newMessage(payload));
-        });
-
-    }, []);
-
 
 
     return (

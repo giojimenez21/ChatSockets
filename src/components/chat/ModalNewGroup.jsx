@@ -1,4 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
+import moment from 'moment';
 import { Dialog, Transition, Combobox } from '@headlessui/react'
 import { ItemUserForRoom } from './ItemUserForRoom';
 import { useForm } from '../../hooks/useForm';
@@ -7,14 +8,13 @@ import { UiContext } from '../../context/UiContext';
 import { ChatContext } from '../../context/ChatContext';
 import { closeModalNewGroup } from '../../actions/ui';
 import {
-    getLastMessages,
+    createConversation,
     newRoom,
     searchUsersForChat,
     sendNewMessage,
-    startGetLastMessages,
     usersFound
 } from '../../actions/chat';
-import { adapterTypeChat } from '../../adapters/adapters';
+import { newRoomSocket, sendMessageNewRoomSocket, sendMessageSocket } from '../../actions/socket';
 
 
 export const ModalNewGroup = () => {
@@ -36,6 +36,9 @@ export const ModalNewGroup = () => {
 
     const closeModal = () => {
         dispatchUi(closeModalNewGroup());
+        reset();
+        setSelected({});
+        setUsersRoom([]);
     }
 
     const createGroup = async () => {
@@ -49,22 +52,33 @@ export const ModalNewGroup = () => {
                 })],
                 nameRoom: searchInput?.nameRoom
             });
-
+            newRoomSocket(data?.id_room);
             // Enviamos el mensaje
             if (data) {
                 await sendNewMessage({
                     message: searchInput?.message,
                     id_room: data?.id_room
                 });
-
-                // obtenemos los ultimos mensajes
-                const { resultMessages } = await startGetLastMessages();
-
-                // Lo subimos al state y reseteamos los state del modal
-                dispatchChat(getLastMessages(adapterTypeChat(resultMessages)));
-                reset();
-                setSelected({});
-                setUsersRoom([]);
+                sendMessageNewRoomSocket({
+                    id_room: data?.id_room,
+                    nameRoom: searchInput?.nameRoom,
+                    url_img: "",
+                    id_user: user?.id,
+                    message: searchInput?.message,
+                    createdAt: moment(),
+                    type: searchInput?.nameRoom,
+                    usersRoom: usersRoom
+                });
+                
+                dispatchChat(createConversation({
+                    id_room: data?.id_room,
+                    nameRoom: searchInput?.nameRoom,
+                    url_img: "",
+                    id_user: user?.id,
+                    message: searchInput?.message,
+                    createdAt: moment(),
+                    type: searchInput?.nameRoom
+                }));
                 closeModal();
             }
         }
@@ -76,7 +90,7 @@ export const ModalNewGroup = () => {
             searchUsers(searchInput?.search);
         }
     }, [searchInput?.search])
-    
+
 
     useEffect(() => {
         if (Object.keys(selected).length !== 0) {

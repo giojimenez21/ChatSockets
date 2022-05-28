@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 import { startGetMessagesOfChat, getMessagesOfChat, activeChatName } from '../../actions/chat';
-import { joinRoom } from '../../actions/socket';
+
 
 export const ItemAside = ({ conversation }) => {
     const { user } = useContext(AuthContext);
@@ -16,7 +16,6 @@ export const ItemAside = ({ conversation }) => {
             dispatch(getMessagesOfChat(messages));
             dispatch(activeChatName(conversation));
         }
-        joinRoom(conversation?.id_room);
     }
 
 

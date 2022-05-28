@@ -9,7 +9,6 @@ import { useForm } from '../../hooks/useForm';
 export const InputMessage = () => {
     const { user } = useContext(AuthContext);
     const { chat, dispatch: dispatchChat } = useContext(ChatContext);
-
     const [messageInput, handleMessage, reset] = useForm({
         message: ""
     });

@@ -29,28 +29,16 @@ export const chatReducer = (state = init, action) => {
             }
 
         case types.newMessage:
-            const [conversationUpdated] = state.conversations.filter(conversation => conversation.id_room === action.payload.id_room);
+            const conversationUpdate = state.conversations.find(conversation => conversation.id_room === action.payload.id_room);
+            conversationUpdate.id_user = action.payload.id_user;
+            conversationUpdate.message = action.payload.message;
+            conversationUpdate.createdAt = action.payload.createdAt;
 
-            const conversationUpdatedFinal = {
-                ...conversationUpdated,
-                id_user: action.payload.id_user,
-                message: action.payload.message,
-                createdAt: action.payload.createdAt
-            }
-
-            const conversationsFilter = state.conversations.filter(conversation => conversation.id_room !== action.payload.id_room);
-
-            if (action.payload.id_room === state.activeChat.id_room) {
-                return {
-                    ...state,
-                    messages: [...state.messages, action.payload],
-                    conversations: [conversationUpdatedFinal, ...conversationsFilter]
-                }
-            }
 
             return {
                 ...state,
-                conversations: [conversationUpdatedFinal, ...conversationsFilter]
+                conversations: [conversationUpdate, ...state.conversations.filter(conversation => conversation.id_room !== action.payload.id_room)],
+                messages: state.activeChat.id_room === action.payload.id_room ? [...state.messages, action.payload] : state.messages
             }
 
         case types.searchUsers:
