@@ -29,7 +29,9 @@ export const Aside = () => {
             <NavbarAside />
             <InputSearch />
             {
-                chat?.conversations?.map(conversation => {
+                chat?.conversations
+                    .filter(c => c.nameRoom.toLowerCase().includes(chat?.search) || !chat?.search)
+                    .map(conversation => {
                     return (
                         <ItemAside
                             conversation={conversation}

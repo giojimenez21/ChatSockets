@@ -130,3 +130,8 @@ export const createConversation = (conversation) => ({
     type: types.createConversation,
     payload: conversation
 });
+
+export const filterConversations = (keyword) => ({
+    type: types.filterConversations,
+    payload: keyword
+})

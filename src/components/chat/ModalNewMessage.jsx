@@ -82,8 +82,8 @@ export const ModalNewMessage = () => {
                 if (res1) {
                     sendMessageNewRoomSocket({
                         id_room: data?.id_room,
-                        nameRoom: selected?.name,
-                        url_img: selected?.url_img,
+                        nameRoom: user?.name,
+                        url_img: user?.picture,
                         id_user: user?.id,
                         message: searchInput?.message,
                         createdAt: moment(),

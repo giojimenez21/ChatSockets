@@ -4,7 +4,8 @@ const init = {
     conversations: [],
     messages: [],
     activeChat: {},
-    users: []
+    users: [],
+    search: "",
 }
 
 export const chatReducer = (state = init, action) => {
@@ -51,6 +52,12 @@ export const chatReducer = (state = init, action) => {
             return {
                 ...state,
                 conversations: [action.payload, ...state.conversations]
+            }
+
+        case types.filterConversations:
+            return {
+                ...state,
+                search: action.payload
             }
         default:
             break;

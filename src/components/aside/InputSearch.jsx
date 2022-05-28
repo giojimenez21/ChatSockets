@@ -1,26 +1,27 @@
-import React from 'react';
-import { searchUsersForChat } from '../../actions/chat';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from '../../hooks/useForm';
+import { ChatContext } from '../../context/ChatContext'
+import { filterConversations } from '../../actions/chat';
 
 export const InputSearch = () => {
+    const { chat, dispatch } = useContext(ChatContext);
     const [inputSearch, handleSearch, reset] = useForm({
         search: ""
-    })
-
-    const searchUsers = async (e) => {
-        e.preventDefault();
-        const res = await searchUsersForChat(inputSearch.search);
-        console.log(res);
-    }
+    });
 
     const cleanSearch = () => {
         reset();
+        dispatch(filterConversations(inputSearch?.search));
     }
+
+    useEffect(() => {
+        dispatch(filterConversations(inputSearch?.search));
+    }, [inputSearch?.search])
 
 
     return (
         <div className="w-full p-3">
-            <form className='flex' onSubmit={searchUsers}>
+            <form className='flex'>
                 <input className='w-full mx-auto p-2 rounded border focus:outline-none' type="text" autoComplete='off' name='search' value={inputSearch?.search} onChange={handleSearch} />
                 {
                     inputSearch?.search !== ""
