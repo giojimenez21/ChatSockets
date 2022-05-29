@@ -15,7 +15,7 @@ export const Message = db.define(
             type: DataTypes.INTEGER,
         },
         createdAt: {
-            type: DataTypes.TIME,
+            type: DataTypes.DATE(3),
         },
         updatedAt: {
             type: DataTypes.TIME,

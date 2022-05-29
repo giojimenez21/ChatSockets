@@ -3,7 +3,7 @@ import configProd from "./prod";
 
 let configDB:any;
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV !== "production") {
     configDB = configDev;
 } else {
     configDB = configProd;
