@@ -8,7 +8,6 @@ import { useForm } from '../../hooks/useForm';
 
 export const InputMessage = () => {
     const { user } = useContext(AuthContext);
-    const [stateMessage, setStateMessage] = useState()
     const { chat, dispatch: dispatchChat } = useContext(ChatContext);
     const [messageInput, handleMessage, reset] = useForm({
         message: ""
@@ -27,7 +26,7 @@ export const InputMessage = () => {
             }));
 
             reset();
-            setStateMessage(true);
+
             const res = await sendNewMessage({
                 ...messageInput,
                 id_room: chat?.activeChat?.id_room
@@ -44,7 +43,6 @@ export const InputMessage = () => {
                     }
                 });
             }
-            setStateMessage(false);
         }
     }
 
@@ -60,7 +58,7 @@ export const InputMessage = () => {
                     type="text"
                     autoComplete='off'
                 />
-                <button type="submit" className='px-3 text-white text-xl' disabled={stateMessage}>
+                <button type="submit" className='px-3 text-white text-xl'>
                     <i className='far fa-paper-plane'></i>
                 </button>
             </form>
