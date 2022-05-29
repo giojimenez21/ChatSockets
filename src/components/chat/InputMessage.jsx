@@ -26,6 +26,7 @@ export const InputMessage = () => {
                 createdAt: moment(),
             }));
 
+            reset();
             setStateMessage(true);
             const res = await sendNewMessage({
                 ...messageInput,
@@ -45,7 +46,6 @@ export const InputMessage = () => {
             }
             setStateMessage(false);
         }
-        reset();
     }
 
     return (
