@@ -1,5 +1,5 @@
 dist/
 src/public
+src/database/prod.ts
 node_modules/
 .env
-src/database/prod.ts
