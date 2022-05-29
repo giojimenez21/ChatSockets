@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useContext} from 'react';
+import React, { useContext, useState} from 'react';
 import { newMessage, sendNewMessage } from '../../actions/chat';
 import { sendMessageSocket } from '../../actions/socket';
 import { AuthContext } from '../../context/AuthContext';
@@ -8,6 +8,7 @@ import { useForm } from '../../hooks/useForm';
 
 export const InputMessage = () => {
     const { user } = useContext(AuthContext);
+    const [stateMessage, setStateMessage] = useState()
     const { chat, dispatch: dispatchChat } = useContext(ChatContext);
     const [messageInput, handleMessage, reset] = useForm({
         message: ""
@@ -17,19 +18,20 @@ export const InputMessage = () => {
     const sendMessage = async (e) => {
         e.preventDefault();
         if (messageInput.message !== "") {
+            // Lo ponemos en el state
+            dispatchChat(newMessage({
+                ...messageInput,
+                id_room: chat?.activeChat?.id_room,
+                id_user: user.id,
+                createdAt: moment(),
+            }));
+
+            setStateMessage(true);
             const res = await sendNewMessage({
                 ...messageInput,
                 id_room: chat?.activeChat?.id_room
             });
-
             if (res) {
-                // Lo ponemos en el state
-                dispatchChat(newMessage({
-                    ...messageInput,
-                    id_room: chat?.activeChat?.id_room,
-                    id_user: user.id,
-                    createdAt: moment(),
-                }));
                 // Lo mandamos al socket
                 sendMessageSocket({
                     ...messageInput,
@@ -41,6 +43,7 @@ export const InputMessage = () => {
                     }
                 });
             }
+            setStateMessage(false);
         }
         reset();
     }
@@ -57,7 +60,7 @@ export const InputMessage = () => {
                     type="text"
                     autoComplete='off'
                 />
-                <button type="submit" className='px-3 text-white text-xl'>
+                <button type="submit" className='px-3 text-white text-xl' disabled={stateMessage}>
                     <i className='far fa-paper-plane'></i>
                 </button>
             </form>
