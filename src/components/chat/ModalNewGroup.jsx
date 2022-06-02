@@ -145,7 +145,7 @@ export const ModalNewGroup = () => {
                                                 <div className="w-full p-4 shadow-md rounded-md flex flex-wrap">
                                                     {
                                                         usersRoom?.map(user => {
-                                                            return <ItemUserForRoom user={user} key={user?.id} />
+                                                            return <ItemUserForRoom user={user} key={user?.id} setUsersRoom={setUsersRoom}/>
                                                         })
                                                     }
                                                 </div>
