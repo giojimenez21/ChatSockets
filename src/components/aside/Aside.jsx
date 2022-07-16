@@ -25,7 +25,7 @@ export const Aside = () => {
 
 
     return (
-        <div className='w-full md:w-4/12'>
+        <div className='w-full md:w-4/12 overflow-y-scroll'>
             <NavbarAside />
             <InputSearch />
             {
