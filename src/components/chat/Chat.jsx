@@ -16,7 +16,7 @@ export const Chat = () => {
 
 
     return (
-        <div className='w-8/12 flex flex-col'>
+        <div className='w-full md:w-8/12 h-84 flex flex-col'>
             <div className="flex p-4 items-center bg-green-200">
                 {
                     chat?.activeChat?.url_img === ""
@@ -34,7 +34,7 @@ export const Chat = () => {
                     {chat?.activeChat?.nameRoom}
                 </h1>
             </div>
-            <div className="mx-10 mt-4 overflow-y-scroll">
+            <div className="px-4 mt-4 h-48 md:h-full overflow-y-scroll">
                 {
                     chat?.messages?.map((message, i) => {
                         if (chat?.activeChat?.type !== "NORMAL") {
